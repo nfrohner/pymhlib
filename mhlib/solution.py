@@ -7,6 +7,7 @@ For an optimization problem to solve you have to derive from this class.
 from abc import ABC, abstractmethod
 import numpy as np
 from typing import TypeVar
+from itertools import combinations
 
 from mhlib.settings import settings, get_settings_parser
 
@@ -180,6 +181,8 @@ class VectorSolution(Solution, ABC):
         return self.obj() != other.obj() or self.x == other.x
 
 
+
+
 class BoolVectorSolution(VectorSolution, ABC):
     """Abstract solution class with 0/1 vector as solution representation.
 
@@ -204,3 +207,4 @@ class BoolVectorSolution(VectorSolution, ABC):
         for v in self.x:
             if not 0 <= v <= 1:
                 raise ValueError("Invalid value in BoolVectorSolution: {self.x}")
+

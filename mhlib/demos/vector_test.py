@@ -55,7 +55,8 @@ class KFlip (unittest.TestCase):
         sol = TestSolution(5)
 
         for _ in range(10):
-            tmp = sol.kflip(3)
+            tmp = sol.copy()
+            tmp.kflip(3)
             self.assertEqual(tmp.obj(), 3)
 
     def test_kflipall_ok(self):

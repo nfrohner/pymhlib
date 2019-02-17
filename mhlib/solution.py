@@ -186,7 +186,7 @@ class VectorSolution(Solution, ABC):
         subs = list(itertools.combinations(list(range(len(self.x))), k))
         sub = random.choice(subs)
 
-        return func(self.copy(), sub)
+        return func(sub)
 
     def kexchange_all(self, k, func):
         assert 0 < k <= len(self.x)
@@ -194,7 +194,8 @@ class VectorSolution(Solution, ABC):
 
         sols = []
         for sub in subs:
-            sols.append(func(self.copy(), sub))
+            tmp = self.copy()
+            sols.append(func(tmp, sub))
 
         return sols
 
@@ -225,16 +226,27 @@ class BoolVectorSolution(VectorSolution, ABC):
             if not 0 <= v <= 1:
                 raise ValueError("Invalid value in BoolVectorSolution: {self.x}")
 
-    def flip(_, sol, sub):
+    def flip(self, sub):
         """ Flips all positions specified in sub """
+        x = self.x
+        for pos in sub:
+            x[pos] = not x[pos]
+
+        self.invalidate()
+
+    def flip_foreign(_, sol, sub):
+        """ This is not nice but I dont know how to use flip on another class
+        This is used kexchange_all
+        """
         for pos in sub:
             sol.x[pos] = not sol.x[pos]
 
         sol.invalidate()
         return sol
 
+
     def kflip(self, k):
         return self.kexchange(k, self.flip)
 
     def kflip_all(self, k):
-        return self.kexchange_all(k, self.flip)
+        return self.kexchange_all(k, self.flip_foreign)

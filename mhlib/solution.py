@@ -7,7 +7,8 @@ For an optimization problem to solve you have to derive from this class.
 from abc import ABC, abstractmethod
 import numpy as np
 from typing import TypeVar
-from itertools import combinations
+import random
+import itertools
 
 from mhlib.settings import settings, get_settings_parser
 
@@ -208,3 +209,19 @@ class BoolVectorSolution(VectorSolution, ABC):
             if not 0 <= v <= 1:
                 raise ValueError("Invalid value in BoolVectorSolution: {self.x}")
 
+    def kflip(self, k, func):
+        assert 0 < k <= len(self.x)
+        subs = list(itertools.combinations(list(range(len(self.x))), k))
+        sub = random.choice(subs)
+
+        return func(self.copy(), sub)
+
+    def kflip_all(self, k, func):
+        assert 0 < k <= len(self.x)
+        subs = list(itertools.combinations(list(range(len(self.x))), k))
+
+        sols = []
+        for sub in subs:
+            sols.append(func(self.copy(), sub))
+
+        return sols

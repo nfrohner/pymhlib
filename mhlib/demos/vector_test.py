@@ -7,9 +7,6 @@ import random
 
 from mhlib.solution import BoolVectorSolution
 
-from itertools import combinations
-import itertools
-
 class TestSolution(BoolVectorSolution):
     """Solution to a MAXSAT instance.
 
@@ -55,24 +52,6 @@ class TestSolution(BoolVectorSolution):
             p = random.randrange(0, self.inst.n)
             self.x[p] = not self.x[p]
         self.invalidate()
-
-    def kflip(self, k, func):
-        assert 0 < k <= len(self.x)
-        subs = list(itertools.combinations(list(range(len(self.x))), k))
-        sub = random.choice(subs)
-
-        return func(self.copy(), sub)
-
-    def kflip_all(self, k, func):
-        assert 0 < k <= len(self.x)
-        subs = list(itertools.combinations(list(range(len(self.x))), k))
-
-        sols = []
-        for sub in subs:
-            sols.append(func(self.copy(), sub))
-
-        return sols
-
 
     def k_flip_local_search(self, k: int, best_improvement) -> bool:
         """Perform one major iteration of a k-flip local search.

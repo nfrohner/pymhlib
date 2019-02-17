@@ -40,67 +40,6 @@ class TestSolution(BoolVectorSolution):
         del result
         self.initialize(par)
 
-    def local_improve(self, par, result):
-        """Perform k_flip_local_search."""
-        del result
-        self.k_flip_local_search(par, False)
-
-    def shaking(self, par, result):
-        """Scheduler method that performs shaking by flipping par random positions."""
-        del result
-        for i in range(par):
-            p = random.randrange(0, self.inst.n)
-            self.x[p] = not self.x[p]
-        self.invalidate()
-
-    def k_flip_local_search(self, k: int, best_improvement) -> bool:
-        """Perform one major iteration of a k-flip local search.
-
-        If best_improvement is set, the neighborhood is completely searched and a best neighbor is kept;
-        otherwise the search terminates in a first-improvement manner, i.e., keeping a first encountered
-        better solution.
-
-        Returns True if an improved solution has been found.
-        """
-        x = self.x
-        assert 0 < k <= len(x)
-        better_found = False
-        best_sol = self.copy()
-        p = np.full(k, -1)  # flipped positions
-        # initialize
-        i = 0  # current index in p to consider
-        while i >= 0:
-            # evaluate solution
-            if i == k:
-                self.invalidate()
-                if self.is_better(best_sol):
-                    if not best_improvement:
-                        return True
-                    best_sol.copy_from(self)
-                    better_found = True
-                i -= 1  # backtrack
-            else:
-                if p[i] == -1:
-                    # this index has not yet been placed
-                    p[i] = (p[i-1] if i > 0 else -1) + 1
-                    x[p[i]] = not x[p[i]]
-                    i += 1  # continue with next position (if any)
-                elif p[i] < len(x) - (k - i):
-                    # further positions to explore with this index
-                    x[p[i]] = not x[p[i]]
-                    p[i] += 1
-                    x[p[i]] = x[p[i]]
-                    i += 1
-                else:
-                    # we are at the last position with the i-th index, backtrack
-                    x[p[i]] = not x[p[i]]
-                    p[i] = -1  # unset position
-                    i -= 1
-        if better_found:
-            self.copy_from(best_sol)
-            self.invalidate()
-            return better_found
-
 
 def func(sol, sub):
     for pos in sub:

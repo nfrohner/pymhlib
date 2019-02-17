@@ -41,34 +41,26 @@ class TestSolution(BoolVectorSolution):
         self.initialize(par)
 
 
-def func(sol, sub):
-    for pos in sub:
-        sol.x[pos] = not sol.x[pos]
-
-    sol.invalidate()
-    return sol
-
-
 class KFlip (unittest.TestCase):
 
     def test_kflip_to_small(self):
         sol = TestSolution(5)
-        self.assertRaises(AssertionError, lambda:sol.kflip(0, func))
+        self.assertRaises(AssertionError, lambda:sol.kflip(0))
 
     def test_kflip_to_big(self):
         sol = TestSolution(5)
-        self.assertRaises(AssertionError, lambda:sol.kflip(6, func))
+        self.assertRaises(AssertionError, lambda:sol.kflip(6))
 
     def test_kflip_ok(self):
         sol = TestSolution(5)
 
         for _ in range(10):
-            tmp = sol.kflip(3, func)
+            tmp = sol.kflip(3)
             self.assertEqual(tmp.obj(), 3)
 
     def test_kflipall_ok(self):
         sol = TestSolution(5)
-        all = sol.kflip_all(3, func)
+        all = sol.kflip_all(3)
 
         self.assertEqual(len(all), 10)
 

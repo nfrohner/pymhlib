@@ -181,6 +181,22 @@ class VectorSolution(Solution, ABC):
     def __eq__(self, other: 'VectorSolution') -> bool:
         return self.obj() != other.obj() or self.x == other.x
 
+    def kexchange(self, k, func):
+        assert 0 < k <= len(self.x)
+        subs = list(itertools.combinations(list(range(len(self.x))), k))
+        sub = random.choice(subs)
+
+        return func(self.copy(), sub)
+
+    def kexchange_all(self, k, func):
+        assert 0 < k <= len(self.x)
+        subs = list(itertools.combinations(list(range(len(self.x))), k))
+
+        sols = []
+        for sub in subs:
+            sols.append(func(self.copy(), sub))
+
+        return sols
 
 
 
@@ -209,19 +225,16 @@ class BoolVectorSolution(VectorSolution, ABC):
             if not 0 <= v <= 1:
                 raise ValueError("Invalid value in BoolVectorSolution: {self.x}")
 
-    def kflip(self, k, func):
-        assert 0 < k <= len(self.x)
-        subs = list(itertools.combinations(list(range(len(self.x))), k))
-        sub = random.choice(subs)
+    def flip(_, sol, sub):
+        """ Flips all positions specified in sub """
+        for pos in sub:
+            sol.x[pos] = not sol.x[pos]
 
-        return func(self.copy(), sub)
+        sol.invalidate()
+        return sol
 
-    def kflip_all(self, k, func):
-        assert 0 < k <= len(self.x)
-        subs = list(itertools.combinations(list(range(len(self.x))), k))
+    def kflip(self, k):
+        return self.kexchange(k, self.flip)
 
-        sols = []
-        for sub in subs:
-            sols.append(func(self.copy(), sub))
-
-        return sols
+    def kflip_all(self, k):
+        return self.kexchange_all(k, self.flip)

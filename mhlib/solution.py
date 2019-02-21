@@ -10,12 +10,10 @@ from typing import TypeVar
 
 from mhlib.settings import settings, get_settings_parser
 
-
 parser = get_settings_parser()
 parser.add("--mh_maxi", default=True, action='store_true',
            help='maximize the objective function, else minimize')
 parser.add("--no_mh_maxi", dest='mh_maxi', action='store_false')
-
 
 TObj = TypeVar('TObj', int, float)  # Type of objective value
 
@@ -178,6 +176,60 @@ class VectorSolution(Solution, ABC):
 
     def __eq__(self, other: 'VectorSolution') -> bool:
         return self.obj() != other.obj() or self.x == other.x
+
+
+def one_point_crossover(parent_a: VectorSolution, parent_b: VectorSolution, position: int):
+    """One point crossover operator.
+
+    Attributes
+        - parent_left: first part of the result
+        - parent_right: second part of the result
+        - position:
+    """
+    assert type(parent_a) == type(parent_b)
+    assert 0 < position and position < len(parent_a.x)
+    assert 0 < position and position < len(parent_b.x)
+
+    #    parent_a.x[position:], parent_b.x[position:] = parent_b.x[position:], parent_a.x[position:]
+
+    a = parent_a.x
+    b = parent_b.x
+    for i in range(position, len(a)):
+        a[i], b[i] = b[i], a[i]
+
+    return parent_a, parent_b
+
+
+def multi_point_crossover(parent_a: VectorSolution, parent_b: VectorSolution, positions: [int]):
+    """One point crossover operator.
+
+    Attributes
+        - parent_left: first part of the result
+        - parent_right: second part of the result
+        - position:
+    """
+    assert type(parent_a) == type(parent_b)
+    all(positions[i] <= positions[i + 1] for i in range(len(positions) - 1))
+    assert 0 < positions[0] and positions[-1] < len(parent_a.x)
+    assert 0 < positions[0] and positions[-1] < len(parent_b.x)
+
+    #    parent_a.x[position:], parent_b.x[position:] = parent_b.x[position:], parent_a.x[position:]
+
+    a = parent_a.x
+    b = parent_b.x
+
+    swap = False
+    p = 0
+
+    for i in range(0, len(a)):
+        if p < len(positions) and i == positions[p]:
+            swap = not swap
+            p += 1
+
+        if swap:
+            a[i], b[i] = b[i], a[i]
+
+    return parent_a, parent_b
 
 
 class BoolVectorSolution(VectorSolution, ABC):

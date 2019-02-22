@@ -386,6 +386,7 @@ class GVNS(Scheduler):
 
         self.gvns(sol)
 
+
 class PBIG(Scheduler):
     """A population-based iterated greedy algorithm.
 
@@ -417,7 +418,7 @@ class PBIG(Scheduler):
         pop_size = 20
 
 #        population = List[Solution]
-        population : List[Solution] = []
+        population: List[Solution] = []
 
         meths_cycle = cycle(self.meths_ch)
 
@@ -430,13 +431,11 @@ class PBIG(Scheduler):
             population.append(indiv)
             if res.terminate:
                 print(f"Break detected but ignored for now")
-                #break
+                # break
 
-        meths_dr : List[Method] = [] # TODO already pass in delete and reconstruct methods
-        #TODO append all individual methods
-        meths_dr.append(self.meths_li[0])
-        meths_dr.append(self.meths_sh[0])
-
+        # TODO already pass in delete and reconstruct methods
+        # TODO append all individual methods
+        meths_dr: List[Method] = [self.meths_li[0], self.meths_sh[0]]
         meths_dr_cycle = cycle(meths_dr)
 
         iteration = 0
@@ -445,9 +444,9 @@ class PBIG(Scheduler):
             iteration += 1
             print(f"Iteration: {iteration}")
 
-            best : Solution = self.incumbent
+            best: Solution = self.incumbent
 
-            nextgen : List[Solution] = []
+            nextgen: List[Solution] = []
             for indiv in population:
                 mod = indiv.copy()
                 m = next(meths_dr_cycle)
@@ -455,11 +454,13 @@ class PBIG(Scheduler):
 
                 if res.terminate:
                     True
-#                    print(f"Break detected but ignored for now")
-                    #terminate = True
-                    #break
+                    # TODO restore break
+                    # TODO figure out why it already terminates
+                    # print(f"Break detected but ignored for now")
+                    # terminate = True
+                    # break
 
-                if res.changed :
+                if res.changed:
                     if mod.is_better(indiv):
                         nextgen.append(mod)
 
@@ -469,12 +470,11 @@ class PBIG(Scheduler):
                     else:
                         nextgen.append(indiv)
                 else:
-                    nextgen.append(indiv) # indiv eq mod
+                    nextgen.append(indiv)  # indiv eq mod
 
-            population = nextgen # replace old population with new
-            self.incumbent = best # update best solution
+            population = nextgen  # replace old population with new
+            self.incumbent = best  # update best solution
             print(f"Best {best.obj()}")
 
             if iteration == 20:
                 terminate = True
-

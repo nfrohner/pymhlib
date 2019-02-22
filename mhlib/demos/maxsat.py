@@ -162,6 +162,7 @@ class MAXSATSolution(BoolVectorSolution):
 
 
 if __name__ == '__main__':
+    # TODO fix this temporary block
     from mhlib.demos.common import run_gvns_demo, run_pbig_demo, data_dir
 #    run_gvns_demo('MAXSAT', MAXSATInstance, MAXSATSolution, data_dir+"advanced.cnf")
     run_pbig_demo('MAXSAT', MAXSATInstance, MAXSATSolution, data_dir+"advanced.cnf")

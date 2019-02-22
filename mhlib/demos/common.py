@@ -69,7 +69,6 @@ def run_pbig_demo(problem_name: str, Instance, Solution, default_inst_file: str,
 
     logger.info(f"Solution: {solution}, obj={solution.obj()}\n")
 
-
     pbig = PBIG(solution,
                 [Method(f"ch{i}", Solution.construct, i) for i in range(settings.meths_ch)],
                 [Method(f"li{i}", Solution.local_improve, i) for i in range(1, settings.meths_li + 1)],

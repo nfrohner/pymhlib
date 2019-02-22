@@ -1,17 +1,14 @@
-"""Demo application solving the Quadratic Assignment Problem (QAP)."""
-
 import unittest
 
 import numpy as np
-import random
 
 from mhlib.solution import BoolVectorSolution
 
+
 class TestSolution(BoolVectorSolution):
-    """Solution to a MAXSAT instance.
+    """Solution for testing the k-flip operation.
 
     Attributes
-        - inst: associated MAXSATInstance
         - x: binary incidence vector
     """
 
@@ -22,15 +19,6 @@ class TestSolution(BoolVectorSolution):
 
     def calc_objective(self):
         return np.sum(self.x)
-
-    def check(self):
-        """Check if valid solution.
-
-        Raises ValueError if problem detected.
-        """
-        if len(self.x) != self.inst.n:
-            raise ValueError("Invalid length of solution")
-        super().check()
 
     def construct(self, par, result):
         """Scheduler method that constructs a new solution.
@@ -45,11 +33,11 @@ class KFlip (unittest.TestCase):
 
     def test_kflip_to_small(self):
         sol = TestSolution(5)
-        self.assertRaises(AssertionError, lambda:sol.kflip(0))
+        self.assertRaises(AssertionError, lambda: sol.kflip(0))
 
     def test_kflip_to_big(self):
         sol = TestSolution(5)
-        self.assertRaises(AssertionError, lambda:sol.kflip(6))
+        self.assertRaises(AssertionError, lambda: sol.kflip(6))
 
     def test_kflip_ok(self):
         sol = TestSolution(5)
@@ -61,14 +49,13 @@ class KFlip (unittest.TestCase):
 
     def test_kflipall_ok(self):
         sol = TestSolution(5)
-        all = sol.kflip_all(3)
+        allsolutions = sol.kflip_all(3)
 
-        self.assertEqual(len(all), 10)
+        self.assertEqual(len(allsolutions), 10)
 
-        for tmp in all:
-            self.assertEqual(tmp.obj(), 3)
+        for solution in allsolutions:
+            self.assertEqual(solution.obj(), 3)
 
 
 if __name__ == '__main__':
     unittest.main()
-

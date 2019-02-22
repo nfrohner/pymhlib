@@ -200,7 +200,6 @@ class VectorSolution(Solution, ABC):
         return sols
 
 
-
 class BoolVectorSolution(VectorSolution, ABC):
     """Abstract solution class with 0/1 vector as solution representation.
 
@@ -234,7 +233,8 @@ class BoolVectorSolution(VectorSolution, ABC):
 
         self.invalidate()
 
-    def flip_foreign(_, sol, sub):
+    @staticmethod
+    def flip_foreign(sol, sub):
         """ This is not nice but I dont know how to use flip on another class
         This is used kexchange_all
         """
@@ -244,9 +244,8 @@ class BoolVectorSolution(VectorSolution, ABC):
         sol.invalidate()
         return sol
 
-
     def kflip(self, k):
         return self.kexchange(k, self.flip)
 
     def kflip_all(self, k):
-        return self.kexchange_all(k, self.flip_foreign)
+        return self.kexchange_all(k, BoolVectorSolution.flip_foreign)

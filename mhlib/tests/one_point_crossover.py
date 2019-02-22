@@ -4,10 +4,9 @@ from mhlib.solution import BoolVectorSolution, one_point_crossover, multi_point_
 
 
 class TestSolution(BoolVectorSolution):
-    """Solution to a MAXSAT instance.
+    """Solution for testing the point crossover operation.
 
     Attributes
-        - inst: associated MAXSATInstance
         - x: binary incidence vector
     """
 
@@ -21,15 +20,6 @@ class TestSolution(BoolVectorSolution):
 
     def calc_objective(self):
         return 0
-
-    def check(self):
-        """Check if valid solution.
-
-        :raises ValueError: if problem detected.
-        """
-        if len(self.x) != self.inst.n:
-            raise ValueError("Invalid length of solution")
-        super().check()
 
     def construct(self, par, result):
         """Scheduler method that constructs a new solution.
@@ -69,6 +59,7 @@ class OnePointCrossoverTestCase(unittest.TestCase):
         b = TestSolution(2)
         self.assertRaises(AssertionError, lambda: one_point_crossover(a, b, 2))
 
+
 class MultiPointCrossoverTestCase(unittest.TestCase):
     def test_single_ok(self):
         a = TestSolution(5)
@@ -99,12 +90,13 @@ class MultiPointCrossoverTestCase(unittest.TestCase):
         ax = [True, True, False, False, True]
         bx = [False, False, True, True, False]
 
-        multi_point_crossover(a, b, [2,4])
+        multi_point_crossover(a, b, [2, 4])
 
         # Comparison
         for i in range(0, 5):
             self.assertEqual(a.x[i], ax[i])
             self.assertEqual(b.x[i], bx[i])
+
 
 if __name__ == '__main__':
     unittest.main()

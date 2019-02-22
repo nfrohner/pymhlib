@@ -187,8 +187,9 @@ def one_point_crossover(parent_a: VectorSolution, parent_b: VectorSolution, posi
         - position:
     """
     assert type(parent_a) == type(parent_b)
-    assert 0 < position and position < len(parent_a.x)
-    assert 0 < position and position < len(parent_b.x)
+    assert 0 < position
+    assert position < len(parent_a.x)
+    assert position < len(parent_b.x)
 
     #    parent_a.x[position:], parent_b.x[position:] = parent_b.x[position:], parent_a.x[position:]
 
@@ -210,8 +211,9 @@ def multi_point_crossover(parent_a: VectorSolution, parent_b: VectorSolution, po
     """
     assert type(parent_a) == type(parent_b)
     all(positions[i] <= positions[i + 1] for i in range(len(positions) - 1))
-    assert 0 < positions[0] and positions[-1] < len(parent_a.x)
-    assert 0 < positions[0] and positions[-1] < len(parent_b.x)
+    assert 0 < positions[0]
+    assert positions[-1] < len(parent_a.x)
+    assert positions[-1] < len(parent_b.x)
 
     #    parent_a.x[position:], parent_b.x[position:] = parent_b.x[position:], parent_a.x[position:]
 
